@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Arrangement Calculator</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+padding: 20px;
+}
+.container {
+max-width: 600px;
+margin: 0 auto;
+background: #f4f4f4;
+padding: 20px;
+border-radius: 5px;
+}
+h2 {
+text-align: center;
+}
+.form-field {
+margin-bottom: 15px;
+}
+label {
+display: block;
+margin-bottom: 5px;
+}
+input, select {
+width: 100%;
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
+}
+button {
+width: 100%;
+padding: 10px;
+background-color: #4CAF50;
+color: white;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+}
+button:hover {
+background-color: #45a049;
+}
+.result {
+margin-top: 20px;
+background-color: #e2e2e2;
+padding: 10px;
+border-radius: 4px;
+display: none;
+}
+.option-list {
+margin-top: 20px;
+}
+.option-item {
+margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Payment Arrangement Calculator</h2>
+
+<div class="form-field">
+<label for="balance">Total Debt Balance ($):</label>
+<input type="number" id="balance" placeholder="Enter Total Balance" required>
+</div>
+
+<div class="form-field">
+<label for="settlement">Settlement Discount Percentage (%):</label>
+<input type="number" id="settlement" placeholder="Enter Settlement Percentage" required>
+</div>
+
+<button onclick="calculatePayment()">Calculate Payment Plan</button>
+
+<div class="result" id="result">
+<h3>Available Payment Options:</h3>
+<div class="option-list" id="options"></div>
+</div>
+</div>
+
+<script>
+function calculatePayment() {
+let balance = parseFloat(document.getElementById('balance').value);
+let settlementPercent = parseFloat(document.getElementById('settlement').value);
+let resultDiv = document.getElementById('result');
+let optionsDiv = document.getElementById('options');
+
+// Allow 0% settlement but disallow negative or invalid inputs
+if (isNaN(balance) || isNaN(settlementPercent) || balance <= 0 || settlementPercent < 0) {
+alert("Please enter valid values.");
+return;
+}
+
+// Calculate Settlement Amount
+let settlementAmountValue = balance * (1 - (settlementPercent / 100));
+
+// Clear previous options
+optionsDiv.innerHTML = '';
+
+// Generate payment plan options based on 2 to 48 installments
+for (let i = 2; i <= 48; i++) {
+let monthlyPayment = settlementAmountValue / i;
+
+let optionItem = document.createElement('div');
+optionItem.classList.add('option-item');
+optionItem.innerHTML = `<strong>${i} Payments:</strong> $${monthlyPayment.toFixed(2)} per month (Total: $${(monthlyPayment * i).toFixed(2)})`;
+optionsDiv.appendChild(optionItem);
+}
+
+// Add settlement option display
+let settlementOption = document.createElement('div');
+settlementOption.classList.add('option-item');
+settlementOption.innerHTML = `<strong>Settlement Amount with ${settlementPercent}% Discount:</strong> $${settlementAmountValue.toFixed(2)} (due in May 2025)`;
+optionsDiv.appendChild(settlementOption);
+
+// Show results
+resultDiv.style.display = 'block';
+}
+</script>
+
+</body>
+</html>
